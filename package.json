@@ -1,6 +1,6 @@
 {
   "name": "linkedin-api-wrapper",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Simple wrapper to access the linkedin API",
   "main": "index.js",
   "scripts": {
