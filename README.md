@@ -51,6 +51,25 @@ const response = await linkedin.get('people/~/shares', {
 
 The library is a very thing wrapper. It should work with any API endpoint.
 
+### Obtaining your access token
+
+LinkedIn uses OAuth2 for authentification and requires user approval. Two helpers
+scripts are provided to obtain those credentials:
+
+1. First, export the `LINKEDIN_CLIENT_ID` and `LINKEDIN_CLIENT_SECRET` environment variables
+   with the corresponding values for your application
+2. Then, run `oauth-step1.sh`. It will open an `x-www-browser` window to the authorization page
+3. Eventually log in to LinkedIn, then grant parmissions to your application
+4. LinkedIn will redirect your browser to `http://localhost:8000`. From the URL bar, copy the 
+   `code` parameter
+5. Export the code obtained in the previous step as the environment variable `LINKEDIN_CODE`
+6. Run the `oauth-step2.sh` script. It will connect to LinkedIn and get an access token for
+   your application using the authorization code.
+7. Copy the access token from the reply. It will be the token to use for all subsequent
+   api requests.
+
+-
+
 ## Node version
 Require NodeJS >= v7.6
 (_should_ work starting with v7.0 with the `--harmony` flag)

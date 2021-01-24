@@ -12,35 +12,45 @@ describe("linkedin", function() {
   this.timeout(5000);
 
   it("should return an object on success", () => {
-    return linkedin.api('people/~')
+    return linkedin.api('me')
       .then((body) => assert.equal(typeof body, 'object'));
   });
 
   it("should return an object holding the answer", () => {
-    return linkedin.api('people/~')
+    return linkedin.api('me')
       .then((body) => {
         debug(body);
-        assert.property(body, 'firstName');
-        assert.property(body, 'lastName');
-        assert.property(body, 'siteStandardProfileRequest');
-        assert.property(body.siteStandardProfileRequest, 'url');
+        assert.property(body, 'id');
+        assert.property(body, 'localizedFirstName');
+        assert.property(body, 'localizedLastName');
       });
   });
 
-  it("should allow posting", () => {
-    return linkedin.api('people/~/shares', {
+  it("should allow posting", async () => {
+    author = await linkedin.api('me').then(body => body.id)
+
+    return linkedin.api('ugcPosts', {
         method: 'POST',
         body: {
-          "comment": "Check out my web site! https://yesik.it",
+          "author": `urn:li:person:${author}`,
+          "lifecycleState": "PUBLISHED",
+          "specificContent": {
+            "com.linkedin.ugc.ShareContent": {
+              "shareCommentary": {
+                "text": "Check out my web site --  https://yesik.it",
+              },
+              "shareMediaCategory": "NONE",
+            }
+          },
           "visibility": {
-            "code": "anyone"
+            "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
           }
         },
       })
       .then((body) => {
         debug(body);
-        assert.property(body, 'updateKey');
-        assert.property(body, 'updateUrl');
+        assert.property(body, 'id');
+        assert.match(body.id, /^urn:li:share:/);
       });
   });
 
