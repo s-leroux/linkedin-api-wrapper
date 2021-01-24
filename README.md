@@ -22,7 +22,6 @@ Due to the limited lifetime of LinkedIn access tokens, continuous integration do
 const LinkedIn = require("linkedin-api-wrapper");
 const linkedin = LinkedIn({
   access_token: auth_token,
-  version: 'v1', // this is the default
 });
 ```
 
@@ -30,20 +29,32 @@ const linkedin = LinkedIn({
 ### Obtaining informations about your profile
 
 ```
-const profile = await linkedin.get('people/~');
+const profile = await linkedin.api('me');
 ```
 
 ### Sharing content on your feed
 
 ```
-const response = await linkedin.get('people/~/shares', {
+const response = await linkedin.api('ugcShares', {
     method: 'POST',
-    body: {
-      "comment": "Check out my web site! https://yesik.it",
+      body: {
+        "author": `urn:li:person:${author}`,
+        "lifecycleState": "PUBLISHED",
+        "specificContent": {
+          "com.linkedin.ugc.ShareContent": {
+            "shareCommentary": {
+              "text": "Check out my web site --  https://yesik.it",
+            },
+            "shareMediaCategory": "NONE",
+          }
+        },
+        "visibility": {
+          "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+        }
+      },
       "visibility": {
         "code": "anyone"
       }
-    },
   });
 ```
 
